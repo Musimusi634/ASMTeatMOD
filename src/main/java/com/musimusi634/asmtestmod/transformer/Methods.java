@@ -1,9 +1,13 @@
 package com.musimusi634.asmtestmod.transformer;
 
-import com.mojang.logging.LogUtils;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 
 public class Methods {
-    public static void onGetHealth() {
-        LogUtils.getLogger().info("getHealth called!");
+    public static float onGetHealth(LivingEntity entity,float health) {
+        if (entity.hasEffect(MobEffects.GLOWING)){
+            return entity.getMaxHealth();
+        }
+        return health;
     }
 }

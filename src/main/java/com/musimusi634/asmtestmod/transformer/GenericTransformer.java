@@ -6,10 +6,7 @@ import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.ITransformerActivity;
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
@@ -50,15 +47,20 @@ public class GenericTransformer {
             if (!"m_21223_".equals(method.name)) continue;
             InsnList instructions = new InsnList();
             LOGGER.info("getHealth found!");
-            instructions.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    "com/musimusi634/asmtestmod/transformer/Methods",
-                    "onGetHealth",
-                    "()V",
-                    false
-            ));
-            method.instructions.insert(instructions);
-            return ILaunchPluginService.ComputeFlags.SIMPLE_REWRITE;
+            for (AbstractInsnNode Isin : method.instructions) {
+                if (!(Isin.getOpcode() == Opcodes.FRETURN)) continue;
+                LOGGER.info("return found!");
+                instructions.add(new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        "com/musimusi634/asmtestmod/transformer/Methods",
+                        "onGetHealth",
+                        "(net.minecraft.world.entity.LivingEntity;F)F",
+                        false
+                ));
+                method.instructions.insertBefore(Isin,instructions);
+                LOGGER.info("inject completed!");
+                return ILaunchPluginService.ComputeFlags.SIMPLE_REWRITE;
+            }
         }
         return ILaunchPluginService.ComputeFlags.NO_REWRITE;
     }
