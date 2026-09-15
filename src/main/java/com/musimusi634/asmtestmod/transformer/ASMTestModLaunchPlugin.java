@@ -11,7 +11,7 @@ import java.util.EnumSet;
 public class ASMTestModLaunchPlugin implements ILaunchPluginService {
 
     static {
-        LogUtils.getLogger().info("===== ASMTestModLaunchPlugin LOADED =====");
+        LogUtils.getLogger().info("ASMTestModLaunchPlugin LOADED");
     }
 
     @Override

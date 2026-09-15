@@ -7,7 +7,4 @@ import net.minecraftforge.fml.common.Mod;
 public class ASMTestMod
 {
     public static final String MODID = "asmtestmod";
-    static {
-        GenericTransformer.initialize();
-    }
 }

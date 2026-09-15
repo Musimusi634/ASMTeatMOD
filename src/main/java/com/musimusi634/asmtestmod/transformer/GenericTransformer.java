@@ -46,8 +46,7 @@ public class GenericTransformer {
     public static int transform(ClassNode classNode) {
         final Logger LOGGER = LogUtils.getLogger();
         LOGGER.info("LivingEntity found!");
-        for (
-                MethodNode method : classNode.methods) {
+        for (MethodNode method : classNode.methods) {
             if (!"m_21223_".equals(method.name)) continue;
             InsnList instructions = new InsnList();
             LOGGER.info("getHealth found!");
