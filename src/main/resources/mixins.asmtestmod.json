@@ -1,7 +1,6 @@
 {
   "required": true,
   "package": "com.musimusi634.asmtestmod.mixin",
-  "refmap": "mixins.menthaoilreinforcement.refmap.json",
   "mixins": [
   ],
   "injectors": {

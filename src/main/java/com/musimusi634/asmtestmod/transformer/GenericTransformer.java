@@ -41,6 +41,7 @@ public class GenericTransformer {
     }
 
     public static int transform(ClassNode classNode) {
+        boolean transformed = false;
         final Logger LOGGER = LogUtils.getLogger();
         LOGGER.info("LivingEntity found!");
         for (MethodNode method : classNode.methods) {
@@ -50,14 +51,18 @@ public class GenericTransformer {
             for (AbstractInsnNode Isin : method.instructions) {
                 if (!(Isin.getOpcode() == Opcodes.FRETURN)) continue;
                 LOGGER.info("return found!");
+                instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
                 instructions.add(new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
                         "com/musimusi634/asmtestmod/transformer/Methods",
                         "onGetHealth",
-                        "(net.minecraft.world.entity.LivingEntity;F)F",
+                        "(FLnet/minecraft/world/entity/LivingEntity;)F",
                         false
                 ));
                 method.instructions.insertBefore(Isin,instructions);
+                transformed = true;
+            }
+            if (transformed) {
                 LOGGER.info("inject completed!");
                 return ILaunchPluginService.ComputeFlags.SIMPLE_REWRITE;
             }

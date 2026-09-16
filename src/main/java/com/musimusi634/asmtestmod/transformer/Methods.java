@@ -4,7 +4,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 public class Methods {
-    public static float onGetHealth(LivingEntity entity,float health) {
+    public static float onGetHealth(float health,LivingEntity entity) {
         if (entity.hasEffect(MobEffects.GLOWING)){
             return entity.getMaxHealth();
         }
