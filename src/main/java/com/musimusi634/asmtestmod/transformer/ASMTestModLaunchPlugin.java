@@ -22,12 +22,11 @@ public class ASMTestModLaunchPlugin implements ILaunchPluginService {
     @Override
     public int processClassWithFlags(Phase phase, ClassNode classNode, Type classType, String reason) {
         if (!reason.equals(ITransformerActivity.CLASSLOADING_REASON)) return ComputeFlags.NO_REWRITE;
-        if (!classNode.name.equals("net/minecraft/world/entity/LivingEntity")) return ComputeFlags.NO_REWRITE;
         return GenericTransformer.transform(classNode);
     }
 
     @Override
     public EnumSet<Phase> handlesClass(Type classType, boolean isEmpty) {
-        return EnumSet.of(Phase.AFTER);
+        return EnumSet.of(Phase.BEFORE);
     }
 }

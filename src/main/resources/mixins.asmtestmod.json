@@ -1,7 +1,9 @@
 {
   "required": true,
   "package": "com.musimusi634.asmtestmod.mixin",
+  "refmap": "com.musimusi634.asmtestmod.refmap",
   "mixins": [
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
