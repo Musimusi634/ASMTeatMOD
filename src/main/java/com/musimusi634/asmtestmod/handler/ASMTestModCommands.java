@@ -1,8 +1,12 @@
-package com.musimusi634.asmtestmod;
+package com.musimusi634.asmtestmod.handler;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.musimusi634.asmtestmod.ASMTestMod;
+import com.musimusi634.asmtestmod.IASMTest;
+import com.musimusi634.asmtestmod.network.ASMTestNetwork;
+import com.musimusi634.asmtestmod.network.ASMTestSyncPacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -10,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = ASMTestMod.MODID)
 public class ASMTestModCommands {
@@ -21,8 +26,13 @@ public class ASMTestModCommands {
                 Commands.argument("value", BoolArgumentType.bool())
                 .requires(source -> source.hasPermission(2))
                 .executes(ctx -> {
+                    boolean value = BoolArgumentType.getBool(ctx,"value");
                     for (Entity entity : EntityArgument.getEntities(ctx, "entities")) {
-                        ((IASMTest) entity).setASMTestKill(BoolArgumentType.getBool(ctx,"value"));
+                        ((IASMTest) entity).setASMTestKill(value);
+                        ASMTestNetwork.CHANNEL.send(
+                                PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
+                                new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value)
+                        );
                     }
                     return 1;
                 }));
@@ -30,8 +40,13 @@ public class ASMTestModCommands {
                 Commands.argument("value", BoolArgumentType.bool())
                         .requires(source -> source.hasPermission(2))
                         .executes(ctx -> {
+                            boolean value = BoolArgumentType.getBool(ctx,"value");
                             for (Entity entity : EntityArgument.getEntities(ctx, "entities")) {
-                                ((IASMTest) entity).setASMTestInvincible(BoolArgumentType.getBool(ctx,"value"));
+                                ((IASMTest) entity).setASMTestInvincible(value);
+                                ASMTestNetwork.CHANNEL.send(
+                                        PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
+                                        new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value)
+                                );
                             }
                             return 1;
                         }));

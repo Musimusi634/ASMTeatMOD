@@ -3,7 +3,6 @@ package com.musimusi634.asmtestmod.transformer;
 import com.mojang.logging.LogUtils;
 import cpw.mods.modlauncher.LaunchPluginHandler;
 import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.ITransformerActivity;
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
