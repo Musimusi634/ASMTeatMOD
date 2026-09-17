@@ -5,4 +5,6 @@ public interface IASMTest {
     boolean isASMTestKilled();
     void setASMTestInvincible(boolean value);
     boolean isASMTestInvincible();
+    void setASMTestRemove(boolean value);
+    boolean isASMTestRemoved();
 }

@@ -18,7 +18,7 @@ public class ASMTestForgeEventHandler {
         Entity entity = event.getTarget();
         ASMTestNetwork.CHANNEL.send(
                 PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()),
-                new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),((IASMTest) entity).isASMTestInvincible())
+                new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),((IASMTest) entity).isASMTestInvincible(),((IASMTest) entity).isASMTestRemoved())
         );
     }
 }

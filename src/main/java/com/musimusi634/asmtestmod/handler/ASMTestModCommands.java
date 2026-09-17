@@ -20,6 +20,7 @@ import net.minecraftforge.network.PacketDistributor;
 public class ASMTestModCommands {
     public static ArgumentBuilder<CommandSourceStack, ?> KILL;
     public static ArgumentBuilder<CommandSourceStack, ?> INVINCIBLE;
+    public static ArgumentBuilder<CommandSourceStack, ?> REMOVE;
 
     static{
         KILL = Commands.literal("kill").then(
@@ -31,7 +32,7 @@ public class ASMTestModCommands {
                         ((IASMTest) entity).setASMTestKill(value);
                         ASMTestNetwork.CHANNEL.send(
                                 PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-                                new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value)
+                                new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value,((IASMTest) entity).isASMTestRemoved())
                         );
                     }
                     return 1;
@@ -45,7 +46,21 @@ public class ASMTestModCommands {
                                 ((IASMTest) entity).setASMTestInvincible(value);
                                 ASMTestNetwork.CHANNEL.send(
                                         PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-                                        new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value)
+                                        new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(),value,((IASMTest) entity).isASMTestRemoved())
+                                );
+                            }
+                            return 1;
+                        }));
+        REMOVE = Commands.literal("remove").then(
+                Commands.argument("value", BoolArgumentType.bool())
+                        .requires(source -> source.hasPermission(2))
+                        .executes(ctx -> {
+                            boolean value = BoolArgumentType.getBool(ctx,"value");
+                            for (Entity entity : EntityArgument.getEntities(ctx, "entities")) {
+                                ((IASMTest) entity).setASMTestRemove(value);
+                                ASMTestNetwork.CHANNEL.send(
+                                        PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
+                                        new ASMTestSyncPacket(entity.getId(),((IASMTest) entity).isASMTestKilled(), ((IASMTest) entity).isASMTestInvincible(),value)
                                 );
                             }
                             return 1;
@@ -63,6 +78,7 @@ public class ASMTestModCommands {
                 Commands.argument("entities", EntityArgument.entities())
                             .then(INVINCIBLE)
                             .then(KILL)
+                            .then(REMOVE)
                 )
         );
     }
