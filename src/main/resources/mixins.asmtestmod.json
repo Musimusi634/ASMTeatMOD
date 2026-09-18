@@ -8,5 +8,6 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "plugin": "com.musimusi634.asmtestmod.ASMTestModMixinPlugin"
+  "plugin": "com.musimusi634.asmtestmod.ASMTestModMixinPlugin",
+  "mixinPriority": 2147483647
 }
