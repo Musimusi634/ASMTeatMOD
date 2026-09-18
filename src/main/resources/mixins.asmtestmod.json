@@ -3,7 +3,8 @@
   "package": "com.musimusi634.asmtestmod.mixin",
   "refmap": "com.musimusi634.asmtestmod.refmap",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

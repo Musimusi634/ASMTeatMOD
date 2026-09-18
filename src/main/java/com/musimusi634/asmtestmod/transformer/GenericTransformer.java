@@ -18,148 +18,85 @@ import java.util.Objects;
 public class GenericTransformer {
 
     static boolean initialized = false;
-    private static final Logger LOGGER = ASMTestMod.LOGGER;
+    private static boolean transformed;
 
     public static int transform(ClassNode classNode) {
-        boolean transformed = false;
-
+        transformed = false;
         for (MethodNode method : classNode.methods) {
             if (isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21223_", "getHealth", "()F", false)) {
-                LOGGER.info("[ASMTestModTransformer] getHealth found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.FRETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onGetHealth",
-                            "(FLnet/minecraft/world/entity/LivingEntity;)F",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
+                inject(method,
+                        "onGetHealth",
+                        "(FLnet/minecraft/world/entity/LivingEntity;)F",
+                        "getHealth",
+                        Opcodes.FRETURN
+                );
             }else if (isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21233_", "getMaxHealth", "()F", false)) {
-                LOGGER.info("[ASMTestModTransformer] getMaxHealth found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.FRETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onGetMaxHealth",
-                            "(FLnet/minecraft/world/entity/LivingEntity;)F",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
+                inject(method,
+                        "onGetMaxHealth",
+                        "(FLnet/minecraft/world/entity/LivingEntity;)F",
+                        "getMaxHealth",
+                        Opcodes.FRETURN
+                );
             }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21224_", "isDeadOrDying", "()Z", false)){
-                LOGGER.info("[ASMTestModTransformer] isDeadOrDying found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.IRETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onIsDeadOrDying",
-                            "(ZLnet/minecraft/world/entity/LivingEntity;)Z",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
+                inject(method,
+                        "onIsDeadOrDying",
+                        "(ZLnet/minecraft/world/entity/LivingEntity;)Z",
+                        "isDeadOrDying",
+                        Opcodes.IRETURN
+                );
             }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_6084_", "isAlive", "()Z", false)){
-                InsnList instructions = new InsnList();
-                LOGGER.info("[ASMTestModTransformer] isAlive found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.IRETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onIsAlive",
-                            "(ZLnet/minecraft/world/entity/Entity;)Z",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
-            }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_240725_", "isRemoved", "()Z", false)){
-                LOGGER.info("[ASMTestModTransformer] isRemoved found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.IRETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onIsRemoved",
-                            "(ZLnet/minecraft/world/entity/Entity;)Z",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
+                inject(method,
+                        "onIsAlive",
+                        "(ZLnet/minecraft/world/entity/Entity;)Z",
+                        "isAlive",
+                        Opcodes.IRETURN
+                );
+            }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146910_", "isRemoved", "()Z", false)){
+                inject(method,
+                        "onIsRemoved",
+                        "(ZLnet/minecraft/world/entity/Entity;)Z",
+                        "isRemoved",
+                        Opcodes.IRETURN
+                );
             }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146911_", "getRemovalReason", "()Lnet/minecraft/world/entity/Entity$RemovalReason;", false)) {
-                LOGGER.info("[ASMTestModTransformer] getRemovalReason found!");
-                for (AbstractInsnNode Isin : method.instructions) {
-                    if (!(Isin.getOpcode() == Opcodes.ARETURN)) continue;
-                    LOGGER.info("[ASMTestModTransformer] return found!");
-                    instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                    instructions.add(new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "com/musimusi634/asmtestmod/transformer/Methods",
-                            "onGetRemovalReason",
-                            "(Lnet/minecraft/world/entity/Entity$RemovalReason;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/entity/Entity$RemovalReason;",
-                            false
-                    ));
-                    method.maxStack++;
-                    method.instructions.insertBefore(Isin, instructions);
-                    transformed = true;
-                }
+                inject(method,
+                        "onGetRemovalReason",
+                        "(Lnet/minecraft/world/entity/Entity$RemovalReason;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/entity/Entity$RemovalReason;",
+                        "getRemovalReason",
+                        Opcodes.ARETURN
+                );
             }
         }
         if (transformed) {
-            LOGGER.info("[ASMTestModTransformer] inject completed!");
+            ASMTestMod.LOGGER.info("[ASMTestModTransformer] inject completed!");
             return ILaunchPluginService.ComputeFlags.SIMPLE_REWRITE;
         }
         return ILaunchPluginService.ComputeFlags.NO_REWRITE;
     }
 
-    private static boolean inject(MethodNode method, String owner, String name, String desc) {
-        LOGGER.info("[ASMTestModTransformer] " + name + " found!");
+    private static void inject(MethodNode method, String name, String desc, String target, int returnType) {
+        ASMTestMod.LOGGER.info("[ASMTestModTransformer] " + target + " found!");
         for (AbstractInsnNode Isin : method.instructions) {
-            if (!(Isin.getOpcode() == Opcodes.ARETURN)) continue;
+            if (!(Isin.getOpcode() == returnType)) continue;
             InsnList instructions = new InsnList();
-            LOGGER.info("[ASMTestModTransformer] return found!");
+            ASMTestMod.LOGGER.info("[ASMTestModTransformer] return found!");
             instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
             instructions.add(new MethodInsnNode(
                     Opcodes.INVOKESTATIC,
                     "com/musimusi634/asmtestmod/transformer/Methods",
-                    "onGetRemovalReason",
-                    "(Lnet/minecraft/world/entity/Entity$RemovalReason;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/entity/Entity$RemovalReason;",
+                    name,
+                    desc,
                     false
             ));
             method.maxStack++;
             method.instructions.insertBefore(Isin, instructions);
-            return true;
+            transformed = true;
         }
-        return false;
     }
 
     //All code below is from https://github.com/kosianodanngoo/TheTrialMonolith/blob/master/src/main/java/io/github/kosianodangoo/trialmonolith/transformer/GenericTransformer.java
     public static void initialize() {
-        LOGGER.info("[ASMTestModTransformer] starting initialize...");
+        ASMTestMod.LOGGER.info("[ASMTestModTransformer] starting initialize...");
         if (initialized) return;
 
         try {
@@ -173,10 +110,10 @@ public class GenericTransformer {
             @SuppressWarnings("unchecked")
             Map<String, ILaunchPluginService> map = (Map<String, ILaunchPluginService>) field.get(pluginHandler);
             map.put(plugin.name(), plugin);
-            LOGGER.info("[ASMTestModTransformer] initialize finished");
+            ASMTestMod.LOGGER.info("[ASMTestModTransformer] initialize finished");
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            LOGGER.info("[ASMTestModTransformer] initialize failed");
-            LOGGER.error(e.toString());
+            ASMTestMod.LOGGER.info("[ASMTestModTransformer] initialize failed");
+            ASMTestMod.LOGGER.error(e.toString());
         }
         initialized = true;
     }
@@ -221,7 +158,7 @@ public class GenericTransformer {
                     }
                 }
             } catch (Throwable e) {
-                LOGGER.error("Failed to find super Class", e);
+                ASMTestMod.LOGGER.error("Failed to find super Class", e);
                 return false;
             }
         }

@@ -41,7 +41,7 @@ public class ASMTestModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-
+        //GenericTransformer.transform(targetClass);
     }
 
     @Override
