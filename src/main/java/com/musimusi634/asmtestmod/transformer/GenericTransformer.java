@@ -76,8 +76,18 @@ public class GenericTransformer {
 
     private static void inject(MethodNode method, String name, String desc, String target, int returnType) {
         ASMTestMod.LOGGER.info("[ASMTestModTransformer] " + target + " found!");
-        for (AbstractInsnNode Isin : method.instructions) {
-            if (!(Isin.getOpcode() == returnType)) continue;
+        for (AbstractInsnNode Insn : method.instructions) {
+            if (Insn.getOpcode() == Opcodes.INVOKESTATIC) {
+                MethodInsnNode methodInsn = (MethodInsnNode) Insn;
+                if ((methodInsn.owner.equals("com/musimusi634/asmtestmod/transformer/Methods")) && (methodInsn.getPrevious().getOpcode() == Opcodes.ALOAD)){
+                    ASMTestMod.LOGGER.info("[ASMTestModTransformer] previous inject found!");
+                    method.instructions.remove(Insn.getPrevious());
+                    method.instructions.remove(Insn);
+                }
+            }
+        }
+        for (AbstractInsnNode Insn : method.instructions) {
+            if (!(Insn.getOpcode() == returnType)) continue;
             InsnList instructions = new InsnList();
             ASMTestMod.LOGGER.info("[ASMTestModTransformer] return found!");
             instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -89,7 +99,7 @@ public class GenericTransformer {
                     false
             ));
             method.maxStack++;
-            method.instructions.insertBefore(Isin, instructions);
+            method.instructions.insertBefore(Insn, instructions);
             transformed = true;
         }
     }

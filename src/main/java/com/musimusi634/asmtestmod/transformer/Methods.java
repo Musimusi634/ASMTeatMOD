@@ -33,12 +33,7 @@ public class Methods {
     }
 
     public static boolean onIsDeadOrDying(boolean OriginalValue,LivingEntity entity) {
-        if (((IASMTest) entity).isASMTestKilled()){
-            return true;
-        }else if (((IASMTest) entity).isASMTestInvincible()){
-            return false;
-        }
-        return OriginalValue;
+        return !onIsAlive(OriginalValue,entity);
     }
 
     public static boolean onIsRemoved(boolean OriginalValue, Entity entity) {
@@ -58,4 +53,11 @@ public class Methods {
         }
         return OriginalValue;
     }
+
+    public static float hookGetHealth(LivingEntity entity,float OriginalValue){ return onGetHealth(OriginalValue, entity); }
+    public static float hookGetMaxHealth(LivingEntity entity,float OriginalValue){ return onGetMaxHealth(OriginalValue, entity); }
+    public static boolean hookIsAlive(LivingEntity entity,boolean OriginalValue){ return onIsAlive(OriginalValue, entity); }
+    public static boolean hookIsDeadOrDying(LivingEntity entity,boolean OriginalValue){ return onIsDeadOrDying(OriginalValue, entity); }
+    public static boolean hookIsRemoved(LivingEntity entity,boolean OriginalValue){ return onIsRemoved(OriginalValue, entity); }
+    public static Entity.RemovalReason hookGetRemovalReason(LivingEntity entity,Entity.RemovalReason OriginalValue){ return onGetRemovalReason(OriginalValue, entity); }
 }
