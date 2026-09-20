@@ -1,5 +1,6 @@
 package com.musimusi634.asmtestmod;
 
+import com.musimusi634.asmtestmod.agent.AgentLoader;
 import com.musimusi634.asmtestmod.transformer.GenericTransformer;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -8,10 +9,17 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.List;
 import java.util.Set;
 
+import static com.mojang.text2speech.Narrator.LOGGER;
+
 public class ASMTestModMixinPlugin implements IMixinConfigPlugin {
 
     static {
         GenericTransformer.initialize();
+        try {
+            AgentLoader.loadAgent();
+        } catch (Exception e) {
+            LOGGER.error("Agent Load Failed",e);
+        }
     }
 
     @Override

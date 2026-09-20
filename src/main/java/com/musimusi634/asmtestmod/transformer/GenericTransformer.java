@@ -1,6 +1,5 @@
 package com.musimusi634.asmtestmod.transformer;
 
-import com.mojang.logging.LogUtils;
 import com.musimusi634.asmtestmod.ASMTestMod;
 import cpw.mods.modlauncher.LaunchPluginHandler;
 import cpw.mods.modlauncher.Launcher;
@@ -8,7 +7,6 @@ import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-import org.slf4j.Logger;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
