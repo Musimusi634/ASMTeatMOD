@@ -16,7 +16,7 @@ public class ASMTestModMixinPlugin implements IMixinConfigPlugin {
     static {
         GenericTransformer.initialize();
         try {
-            //AgentLoader.loadAgent();
+            AgentLoader.loadAgent();
         } catch (Exception e) {
             LOGGER.error("Agent Load Failed",e);
         }
@@ -49,7 +49,7 @@ public class ASMTestModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        //GenericTransformer.transform(targetClass);
+        GenericTransformer.transform(targetClass);
     }
 
     @Override

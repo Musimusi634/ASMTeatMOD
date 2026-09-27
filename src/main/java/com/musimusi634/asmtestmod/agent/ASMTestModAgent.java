@@ -1,7 +1,5 @@
 package com.musimusi634.asmtestmod.agent;
 
-import com.musimusi634.asmtestmod.ASMTestMod;
-
 import java.lang.instrument.Instrumentation;
 
 public class ASMTestModAgent {
@@ -11,7 +9,7 @@ public class ASMTestModAgent {
         for (Class<?> Class : instrumentation.getAllLoadedClasses()) {
             try {
                 instrumentation.retransformClasses(Class);
-            }catch (Exception e) {
+            }catch (Exception ignored) {
             }
         }
     }

@@ -21,7 +21,7 @@ public class GenericTransformer {
         transformed = false;
         for (MethodNode method : classNode.methods) {
             transformMethodBody(classNode,method);
-            transformMethodCalls(classNode,method);
+            transformMethodCalls(method);
         }
 
         if (transformed) {
@@ -78,7 +78,7 @@ public class GenericTransformer {
     }
 
 
-    private static void transformMethodCalls(ClassNode classNode, MethodNode method) {
+    private static void transformMethodCalls(MethodNode method) {
         for (AbstractInsnNode Insn : method.instructions) {
             if (!(Insn.getOpcode() == Opcodes.INVOKESTATIC)) continue;
             MethodInsnNode methodInsn = (MethodInsnNode) Insn;

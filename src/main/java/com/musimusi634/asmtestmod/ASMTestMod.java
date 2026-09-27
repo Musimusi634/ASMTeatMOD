@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import com.musimusi634.asmtestmod.agent.AgentLoader;
 import com.musimusi634.asmtestmod.network.ASMTestNetwork;
 import com.musimusi634.asmtestmod.transformer.GenericTransformer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -15,7 +14,7 @@ public class ASMTestMod {
 
     public ASMTestMod() {
         ASMTestNetwork.register();
-        //GenericTransformer.initialize();
+        GenericTransformer.initialize();
         try {
             AgentLoader.loadAgent();
         } catch (Exception e) {
