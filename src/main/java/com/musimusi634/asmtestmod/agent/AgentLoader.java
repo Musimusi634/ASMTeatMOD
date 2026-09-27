@@ -1,24 +1,21 @@
 package com.musimusi634.asmtestmod.agent;
 
-import com.mojang.authlib.Agent;
 import com.musimusi634.asmtestmod.ASMTestMod;
 import com.sun.tools.attach.VirtualMachine;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 public class AgentLoader {
+    private static boolean loaded = false;
     public  static void loadAgent() throws Exception {
+        if (loaded) return;
         String pid = String.valueOf(ProcessHandle.current().pid());
         VirtualMachine vm = null;
         String AgentJarPath = buildAgentJar().toAbsolutePath().toString();
@@ -31,6 +28,7 @@ public class AgentLoader {
             ASMTestMod.LOGGER.error("agent load failed!", t);
             if (vm != null) vm.detach();
         }
+        loaded = true;
     }
 
     private static Path buildAgentJar() throws Exception {
@@ -45,17 +43,19 @@ public class AgentLoader {
         Path agentJar = Files.createTempFile("asmtestmod-agent-",".jar");
         JarOutputStream jaroutputstream = new JarOutputStream(Files.newOutputStream(agentJar),manifest);
 
-        byte[] transformerBytes = readResource("com/musimusi634/asmtestmod/agent/AgentTransformer.class");
-        byte[] agentBytes = readResource("com/musimusi634/asmtestmod/agent/ASMTestModAgent.class");
-
-        jaroutputstream.putNextEntry(new JarEntry("com/musimusi634/asmtestmod/agent/AgentTransformer.class"));
-        jaroutputstream.write(transformerBytes);
-        jaroutputstream.closeEntry();
-        jaroutputstream.putNextEntry(new JarEntry("com/musimusi634/asmtestmod/agent/ASMTestModAgent.class"));
-        jaroutputstream.write(agentBytes);
-        jaroutputstream.closeEntry();
+        copyClassFromJar(jaroutputstream,"com/musimusi634/asmtestmod/agent/AgentTransformer.class");
+        copyClassFromJar(jaroutputstream,"com/musimusi634/asmtestmod/agent/ASMTestModAgent.class");
+        copyClassFromJar(jaroutputstream,"com/musimusi634/asmtestmod/transformer/GenericTransformer.class");
         jaroutputstream.close();
+        
         return agentJar;
+    }
+
+    private static void copyClassFromJar(JarOutputStream jaroutputstream,String path) throws IOException {
+        byte[] Bytes = readResource(path);
+        jaroutputstream.putNextEntry(new JarEntry(path));
+        jaroutputstream.write(Bytes);
+        jaroutputstream.closeEntry();
     }
 
     //All code below is from https://github.com/kosianodanngoo/ForbiddenThings/blob/master/src/main/java/io/github/kosianodangoo/forbiddenthings/agent/ForbiddenAgent.java
