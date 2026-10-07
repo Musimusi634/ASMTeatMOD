@@ -16,7 +16,7 @@ public class ASMTestMod {
         ASMTestNetwork.register();
         GenericTransformer.initialize();
         try {
-            AgentLoader.loadAgent();
+            //AgentLoader.loadAgent();
         } catch (Exception e) {
             LOGGER.error("Agent Load Failed",e);
         }

@@ -22,5 +22,4 @@ public class AgentTransformer implements ClassFileTransformer {
         classNode.accept(writer);
         return writer.toByteArray();
     }
-
 }

@@ -16,6 +16,7 @@ public class AgentLoader {
     private static boolean loaded = false;
     public  static void loadAgent() throws Exception {
         if (loaded) return;
+        loaded = true;
         String pid = String.valueOf(ProcessHandle.current().pid());
         VirtualMachine vm = null;
         String AgentJarPath = buildAgentJar().toAbsolutePath().toString();
@@ -26,9 +27,9 @@ public class AgentLoader {
             vm.loadAgent(AgentJarPath);
         } catch (Throwable t) {
             ASMTestMod.LOGGER.error("agent load failed!", t);
+        }finally {
             if (vm != null) vm.detach();
         }
-        loaded = true;
     }
 
     private static Path buildAgentJar() throws Exception {
@@ -51,18 +52,9 @@ public class AgentLoader {
         return agentJar;
     }
 
-    private static void copyClassFromJar(JarOutputStream jaroutputstream,String path) throws IOException {
-        byte[] Bytes = readResource(path);
+    private static void copyClassFromJar(JarOutputStream jaroutputstream,String path) throws Exception {
         jaroutputstream.putNextEntry(new JarEntry(path));
-        jaroutputstream.write(Bytes);
-        jaroutputstream.closeEntry();
-    }
-
-    //All code below is from https://github.com/kosianodanngoo/ForbiddenThings/blob/master/src/main/java/io/github/kosianodangoo/forbiddenthings/agent/ForbiddenAgent.java
-    private static byte[] readResource(String resource) throws IOException {
-        try (InputStream in = ASMTestMod.class.getClassLoader().getResourceAsStream(resource)) {
-            if (in == null) throw new IOException("Resource not found: " + resource);
-            return in.readAllBytes();
-        }
+        jaroutputstream.write(ASMTestMod.class.getClassLoader().getResourceAsStream(path).readAllBytes());
+        jaroutputstream.closeEntry();;
     }
 }

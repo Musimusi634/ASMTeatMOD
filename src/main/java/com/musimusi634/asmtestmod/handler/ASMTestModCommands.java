@@ -16,6 +16,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.lang.reflect.Method;
+
 @Mod.EventBusSubscriber(modid = ASMTestMod.MODID)
 public class ASMTestModCommands {
     public static ArgumentBuilder<CommandSourceStack, ?> KILL;
@@ -79,7 +81,17 @@ public class ASMTestModCommands {
                             .then(INVINCIBLE)
                             .then(KILL)
                             .then(REMOVE)
-                )
+                ).then(
+                        Commands.literal("retransformALL").executes(x -> {
+                            try {
+                                Method method = Class.forName("com.musimusi634.asmtestmod.agent.ASMTestModAgent", true, ClassLoader.getSystemClassLoader()).getMethod("retransformALL");
+                                method.invoke(null);
+                            } catch (Exception ignored) {
+                            }
+                            return 1;
+                                }
+                        )
+        )
         );
     }
 }
