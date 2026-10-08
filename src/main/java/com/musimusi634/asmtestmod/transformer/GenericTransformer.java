@@ -229,8 +229,8 @@ public class GenericTransformer {
             boolean found = false;
             for (Type argumentType : argumentTypes) {
                 if (argumentType.getSort() != Type.OBJECT) continue;
-                if (!isSubclass(argumentType.getInternalName(),"net/minecraft/world/entity/Entity", argumentType.getClass().isInterface())) continue;
-                //if (!(argumentType.getInternalName().equals("net/minecraft/world/entity/Entity") || argumentType.getInternalName().equals("net/minecraft/world/entity/LivingEntity"))) continue;
+                if (!(isSubclass(argumentType.getInternalName(),"net/minecraft/world/entity/Entity", false) || argumentType.getInternalName().equals("java/lang/Object")/*←これ後で変えたい*/)) continue;
+
                 found = true;
                 break;
             }
@@ -258,11 +258,9 @@ public class GenericTransformer {
                 for (int arg = argumentTypes.length - 1; arg >= 0; arg--) {
                     consumed -= argumentTypes[arg].getSize();
                 }
-                if (methodInsn.getOpcode() != Opcodes.INVOKESTATIC) consumed--;
 
                 for (int arg = 0; argumentTypes.length > arg; arg++) {
-                    SourceValue value = frame.getStack(consumed + arg);
-                    if (value.insns.contains(target)) {
+                    if (frame.getStack(consumed + arg).insns.contains(target)) {
                         found = true;
                         break;
                     }
