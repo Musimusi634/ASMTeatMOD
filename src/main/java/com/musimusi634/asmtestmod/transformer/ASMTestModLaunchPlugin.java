@@ -27,6 +27,6 @@ public class ASMTestModLaunchPlugin implements ILaunchPluginService {
 
     @Override
     public EnumSet<Phase> handlesClass(Type classType, boolean isEmpty) {
-        return EnumSet.of(Phase.BEFORE,Phase.AFTER);
+        return EnumSet.of(/*Phase.BEFORE,*/Phase.AFTER);
     }
 }

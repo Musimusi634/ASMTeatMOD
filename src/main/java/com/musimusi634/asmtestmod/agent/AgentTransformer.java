@@ -16,7 +16,7 @@ public class AgentTransformer implements ClassFileTransformer {
         ClassReader classReader = new ClassReader(classfileBuffer);
         classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
         
-        if (!(GenericTransformer.transform(classNode) == ILaunchPluginService.ComputeFlags.SIMPLE_REWRITE)) return null;
+        if (!(GenericTransformer.transform(classNode) == ILaunchPluginService.ComputeFlags.COMPUTE_FRAMES)) return null;
 
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         classNode.accept(writer);

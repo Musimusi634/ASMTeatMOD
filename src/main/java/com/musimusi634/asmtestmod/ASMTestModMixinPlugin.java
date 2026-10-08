@@ -1,6 +1,5 @@
 package com.musimusi634.asmtestmod;
 
-import com.musimusi634.asmtestmod.agent.AgentLoader;
 import com.musimusi634.asmtestmod.transformer.GenericTransformer;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -49,7 +48,7 @@ public class ASMTestModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        GenericTransformer.transform(targetClass);
+        //GenericTransformer.transform(targetClass);
     }
 
     @Override
