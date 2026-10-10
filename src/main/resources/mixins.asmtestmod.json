@@ -1,10 +1,11 @@
 {
   "required": true,
   "package": "com.musimusi634.asmtestmod.mixin",
-  "refmap": "com.musimusi634.asmtestmod.refmap",
+  "refmap": "mixin.refmap.json",
   "mixins": [
     "EntityMixin",
-    "LivingEntityMixin"
+    "LivingEntityAccessor",
+    "SynchedEntityDataAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

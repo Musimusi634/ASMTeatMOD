@@ -39,47 +39,71 @@ public class GenericTransformer {
             injectBody(method,
                     "onGetHealth",
                     "(FLnet/minecraft/world/entity/LivingEntity;)F",
-                    "getHealth",
+                    0,
+                    -1,
                     Opcodes.FRETURN
             );
             return true;
-        }else if (isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21233_", "getMaxHealth", "()F", false)) {
+        } else if (isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21233_", "getMaxHealth", "()F", false)) {
             injectBody(method,
                     "onGetMaxHealth",
                     "(FLnet/minecraft/world/entity/LivingEntity;)F",
-                    "getMaxHealth",
+                    0,
+                    -1,
                     Opcodes.FRETURN
             );
             return true;
-        }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21224_", "isDeadOrDying", "()Z", false)){
+        } else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_21224_", "isDeadOrDying", "()Z", false)){
             injectBody(method,
                     "onIsDeadOrDying",
                     "(ZLnet/minecraft/world/entity/LivingEntity;)Z",
-                    "isDeadOrDying",
+                    0,
+                    -1,
                     Opcodes.IRETURN
             );
             return true;
-        }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_6084_", "isAlive", "()Z", false)){
+        } else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/LivingEntity", "m_6084_", "isAlive", "()Z", false)){
             injectBody(method,
                     "onIsAlive",
                     "(ZLnet/minecraft/world/entity/Entity;)Z",
-                    "isAlive",
+                    0,
+                    -1,
                     Opcodes.IRETURN
             );
             return true;
-        }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146910_", "isRemoved", "()Z", false)){
+        } else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146910_", "isRemoved", "()Z", false)){
             injectBody(method,
                     "onIsRemoved",
                     "(ZLnet/minecraft/world/entity/Entity;)Z",
-                    "isRemoved",
+                    0,
+                    -1,
                     Opcodes.IRETURN
             );
             return true;
-        }else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146911_", "getRemovalReason", "()Lnet/minecraft/world/entity/Entity$RemovalReason;", false)) {
+        } else if(isSameMethod(classNode.name, method, "net/minecraft/world/entity/Entity", "m_146911_", "getRemovalReason", "()Lnet/minecraft/world/entity/Entity$RemovalReason;", false)) {
             injectBody(method,
                     "onGetRemovalReason",
                     "(Lnet/minecraft/world/entity/Entity$RemovalReason;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/entity/Entity$RemovalReason;",
-                    "getRemovalReason",
+                    0,
+                    -1,
+                    Opcodes.ARETURN
+            );
+            return true;
+        } /*else if(isSameMethod(classNode.name, method, "net/minecraft/network/syncher/SynchedEntityData", "m_135370_", "get", "(Lnet/minecraft/network/syncher/EntityDataAccessor;)Ljava/lang/Object;", false)){
+            injectBody(method,
+                    "onSynchedEntityDataGet",
+                    "(Ljava/lang/Object;Lnet/minecraft/network/syncher/EntityDataAccessor;Lnet/minecraft/network/syncher/SynchedEntityData;)Ljava/lang/Object;",
+                    1,
+                    0,
+                    Opcodes.ARETURN
+            );
+            return true;
+        }*/ else if(isSameMethod(classNode.name, method, "net/minecraft/network/syncher/SynchedEntityData", "m_135379_", "getItem", "(Lnet/minecraft/network/syncher/EntityDataAccessor;)Lnet/minecraft/network/syncher/SynchedEntityData$DataItem;", false)){
+            injectBody(method,
+                    "onSynchedEntityDataGetItem",
+                    "(Lnet/minecraft/network/syncher/SynchedEntityData$DataItem;Lnet/minecraft/network/syncher/EntityDataAccessor;Lnet/minecraft/network/syncher/SynchedEntityData;)Lnet/minecraft/network/syncher/SynchedEntityData$DataItem;",
+                    1,
+                    0,
                     Opcodes.ARETURN
             );
             return true;
@@ -88,13 +112,22 @@ public class GenericTransformer {
     }
 
 
-    private static boolean transformMethodCalls(MethodNode method, String owner) {
+    private static boolean  transformMethodCalls(MethodNode method, String owner) {
         boolean transformed = false;
         //TODO:これをAnalyzer式の高度なやつで作り直す
         /*for (AbstractInsnNode Insn : method.instructions) {
             if (!(Insn.getOpcode() == Opcodes.INVOKESTATIC)) continue;
             MethodInsnNode methodInsn = (MethodInsnNode) Insn;
             if (!(methodInsn.owner.equals("com/musimusi634/asmtestmod/transformer/HookMethods"))) continue;
+
+            Analyzer<SourceValue> analyzer = new Analyzer<>(new FlowSourceInterpreter());
+            try {
+                Frame<SourceValue>[] frames = analyzer.analyze(owner, method);
+            }catch (AnalyzerException e){
+                ASMTestMod.LOGGER.error("Analyze Failed",e);
+            }
+
+
             if (!(methodInsn.getPrevious().getPrevious().getOpcode() == Opcodes.DUP)) method.instructions.remove(Insn.getPrevious().getPrevious());
 
             method.instructions.remove(Insn);
@@ -109,42 +142,42 @@ public class GenericTransformer {
                 injectCalls(owner, method, Insn,
                         "hookGetHealth",
                         "(Lnet/minecraft/world/entity/LivingEntity;F)F",
-                        Type.FLOAT_TYPE //getHealth
+                        Type.FLOAT_TYPE
                 );
                 transformed = true;
             } else if (isSameMethod(methodInsn.owner, methodInsn, "net/minecraft/world/entity/LivingEntity", "m_21233_", "getMaxHealth", "()F", false)) {
                 injectCalls(owner, method, Insn,
                         "hookGetMaxHealth",
                         "(Lnet/minecraft/world/entity/LivingEntity;F)F",
-                        Type.FLOAT_TYPE //getMaxHealth
+                        Type.FLOAT_TYPE
                 );
                 transformed = true;
             } else if (isSameMethod(methodInsn.owner, methodInsn, "net/minecraft/world/entity/LivingEntity", "m_21224_", "isDeadOrDying", "()Z", false)) {
                 injectCalls(owner, method, Insn,
                         "hookIsDeadOrDying",
                         "(Lnet/minecraft/world/entity/LivingEntity;Z)Z",
-                        Type.BOOLEAN_TYPE //isDeadOrDying
+                        Type.BOOLEAN_TYPE
                 );
                 transformed = true;
             } else if (isSameMethod(methodInsn.owner, methodInsn, "net/minecraft/world/entity/LivingEntity", "m_6084_", "isAlive", "()Z", false)) {
                 injectCalls(owner, method, Insn,
                         "hookIsAlive",
                         "(Lnet/minecraft/world/entity/Entity;Z)Z",
-                        Type.BOOLEAN_TYPE //isAlive
+                        Type.BOOLEAN_TYPE
                 );
                 transformed = true;
             } else if (isSameMethod(methodInsn.owner, methodInsn, "net/minecraft/world/entity/Entity", "m_146910_", "isRemoved", "()Z", false)) {
                 injectCalls(owner, method, Insn,
                         "hookIsRemoved",
                         "(Lnet/minecraft/world/entity/Entity;Z)Z",
-                        Type.BOOLEAN_TYPE //isRemoved
+                        Type.BOOLEAN_TYPE
                 );
                 transformed = true;
             } else if (isSameMethod(methodInsn.owner, methodInsn, "net/minecraft/world/entity/Entity", "m_146911_", "getRemovalReason", "()Lnet/minecraft/world/entity/Entity$RemovalReason;", false)) {
                 injectCalls(owner, method, Insn,
                         "hookGetRemovalReason",
                         "(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$RemovalReason;)Lnet/minecraft/world/entity/Entity$RemovalReason;",
-                        Type.getObjectType("net/minecraft/world/entity/Entity$RemovalReason")//getRemovalReason
+                        Type.getObjectType("net/minecraft/world/entity/Entity$RemovalReason")
                 );
                 transformed = true;
             }
@@ -152,12 +185,15 @@ public class GenericTransformer {
         return transformed;
     }
 
-    private static void injectBody(MethodNode method, String name, String desc, String target, int returnType) {
+    private static void injectBody(MethodNode method, String name, String desc, int ALOADType,int SecondALOADType, int returnType) {
         for (AbstractInsnNode Insn : method.instructions) {
             if (Insn.getOpcode() != Opcodes.INVOKESTATIC) continue;
             MethodInsnNode methodInsn = (MethodInsnNode) Insn;
             if (!methodInsn.owner.equals("com/musimusi634/asmtestmod/transformer/Methods")) continue;
+            if (!methodInsn.name.equals(name)) continue;
+            if (!methodInsn.desc.equals(desc)) continue;
             if (methodInsn.getPrevious().getOpcode() != Opcodes.ALOAD) continue;
+            if (((VarInsnNode) methodInsn.getPrevious()).var != ALOADType) continue;
             //ASMTestMod.LOGGER.info("[ASMTestModTransformer] previous body inject found!");
             method.instructions.remove(Insn.getPrevious());
             method.instructions.remove(Insn);
@@ -168,7 +204,11 @@ public class GenericTransformer {
             if ((Insn.getOpcode() != returnType)) continue;
             InsnList instructions = new InsnList();
             //ASMTestMod.LOGGER.info("[ASMTestModTransformer] return found!");
-            instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            instructions.add(new VarInsnNode(Opcodes.ALOAD, ALOADType));
+            if (SecondALOADType != -1) {
+                instructions.add(new VarInsnNode(Opcodes.ALOAD, SecondALOADType));
+                method.maxStack++;
+            }
             instructions.add(new MethodInsnNode(
                     Opcodes.INVOKESTATIC,
                     "com/musimusi634/asmtestmod/transformer/Methods",
@@ -186,7 +226,7 @@ public class GenericTransformer {
         AbstractInsnNode LastWrapperInsn;
         try {
             LastWrapperInsn = findLastWrapper(Insn,owner,method,targetType);
-            ASMTestMod.LOGGER.info(((MethodInsnNode) LastWrapperInsn).name);
+            //ASMTestMod.LOGGER.info(((MethodInsnNode) LastWrapperInsn).name);
         }catch (AnalyzerException e){
             ASMTestMod.LOGGER.error("Analyze Failed",e);
             LastWrapperInsn = Insn;
